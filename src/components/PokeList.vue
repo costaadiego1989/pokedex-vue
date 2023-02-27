@@ -1,9 +1,19 @@
 <template>
   <div>
-    <img src="{{ pokemon.front }}" alt="">
-    <h1>{{ number + 1 }}. {{ uppercase(name) }}</h1>
-    <small>{{ pokemon.weight }}</small>
-    <small>{{ pokemon.type }}</small>
+    <div class="imageContainer">
+      <img
+        :src="currentImage"
+        alt=""
+        @mouseenter="changeAvatar()"
+        @mouseleave="changeAvatar()"
+      />
+    </div>
+    <span>{{ number + 1 }}.</span>
+    <h1>{{ uppercase(name) }}</h1>
+    <div class="aditional-info">
+      <small>Peso: {{ pokemon.weight }}</small>
+      <small>Tipo: {{ pokemon.type }}</small>
+    </div>
   </div>
 </template>
 
@@ -14,7 +24,14 @@ export default {
   name: "PokeList",
   data() {
     return {
-      pokemon: {},
+      currentImage: "",
+      isFront: true,
+      pokemon: {
+        front: "",
+        back: "",
+        weight: "",
+        type: "",
+      },
     };
   },
   created: async function () {
@@ -25,7 +42,7 @@ export default {
       this.pokemon.back = req.data.sprites.back_default;
       this.pokemon.weight = req.data.weight;
       this.pokemon.type = req.data.types[0].type.name;
-
+      this.currentImage = this.pokemon.front;
     } catch (error) {
       console.error("error", error);
     }
@@ -42,8 +59,41 @@ export default {
       };
     },
   },
+  methods: {
+    changeAvatar() {
+      if (this.isFront) {
+        this.isFront = !this.isFront;
+        this.currentImage = this.pokemon.back;
+      } else {
+        this.isFront = !this.isFront;
+        this.currentImage = this.pokemon.front;
+      }
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
+h1 {
+  font-family: "Helvetica";
+  font-size: 1.4rem;
+  color: #393836;
+  text-align: center;
+}
+
+span {
+  font-size: 0.75rem;
+  position: absolute;
+}
+
+.aditional-info {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+}
 </style>
