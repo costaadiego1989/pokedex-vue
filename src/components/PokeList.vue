@@ -9,6 +9,14 @@
       />
     </div>
     <span>{{ number + 1 }}.</span>
+    <span class="heart">
+      <img
+        src="../assets/love.png"
+        width="24"
+        alt=""
+        @click="addToFavorites(pokemon)"
+      />
+    </span>
     <h1>{{ uppercase(name) }}</h1>
     <div class="aditional-info">
       <small>Peso: {{ pokemon.weight }}</small>
@@ -19,7 +27,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
   name: "PokeList",
   data() {
@@ -28,6 +35,7 @@ export default {
       isFront: true,
       pokemon: {
         front: "",
+        name: "",
         back: "",
         weight: "",
         type: "",
@@ -41,8 +49,10 @@ export default {
       this.pokemon.front = req.data.sprites.front_default;
       this.pokemon.back = req.data.sprites.back_default;
       this.pokemon.weight = req.data.weight;
+      this.pokemon.name = req.data.name;
       this.pokemon.type = req.data.types[0].type.name;
       this.currentImage = this.pokemon.front;
+
     } catch (error) {
       console.error("error", error);
     }
@@ -69,6 +79,13 @@ export default {
         this.currentImage = this.pokemon.front;
       }
     },
+    addToFavorites(pokemon) {
+      let items = JSON.parse(
+        localStorage.getItem("pokemonsFavourites") || "[]"
+      );
+      items = [...items, pokemon];
+      localStorage.setItem("pokemonsFavourites", JSON.stringify(items));
+    },
   },
 };
 </script>
@@ -93,7 +110,13 @@ span {
 }
 
 .imageContainer {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+.heart {
+  position: relative;
+  left: 8rem;
+  top: -5.85rem;
 }
 </style>
